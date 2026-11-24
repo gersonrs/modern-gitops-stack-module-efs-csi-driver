@@ -1,0 +1,53 @@
+= modern-gitops-stack-module-efs-csi-driver
+// Document attributes to replace along the document
+:aws-efs-csi-driver-chart-version: 2.5.5
+:original-repo-url: https://github.com/kubernetes-sigs/aws-efs-csi-driver
+
+A https://modern-gitops-stack.io[Modern GitOps Stack] module to deploy the AWS EFS CSI driver, which mounts EFS file systems for PersistentVolumeClaims on EKS.
+
+The aws-efs-csi-driver chart used by this module is shipped in this repository as well, in order to avoid any unwanted behaviors caused by unsupported versions.
+
+[cols="1,1,1",options="autowidth,header"]
+|===
+|Current Chart Version |Original Repository |Default Values
+|*2.5.5* |https://github.com/kubernetes-sigs/aws-efs-csi-driver/tree/main/charts/aws-efs-csi-driver[aws-efs-csi-driver] |https://artifacthub.io/packages/helm/aws-efs-csi-driver/aws-efs-csi-driver/2.5.5?modal=values[`values.yaml`]
+|===
+
+== Usage
+
+This module can be declared by adding the following block to your Terraform configuration:
+
+[source,terraform]
+----
+module "efs-csi-driver" {
+  source = "git::https://github.com/GersonRS/modern-gitops-stack-module-efs-csi-driver.git?ref=<RELEASE>"
+
+  cluster_name       = local.cluster_name
+  base_domain        = local.base_domain
+  subdomain          = local.subdomain
+  cluster_issuer     = local.cluster_issuer
+  app_autosync       = local.app_autosync
+  efs_file_system_id = "fs-0123456789abcdef0"
+  create_role        = true
+
+  dependency_ids = {
+    argocd = module.argocd.id
+  }
+}
+----
+
+The application is deployed to the `kube-system` namespace.
+
+== Technical Reference
+
+=== Dependencies
+
+==== `module.argocd.id`
+
+Argo CD applies the driver.
+
+// BEGIN_TF_DOCS
+// END_TF_DOCS
+
+// BEGIN_TF_TABLES
+// END_TF_TABLES
